@@ -1,39 +1,34 @@
-
-def approximate_derivative(fun, x, h=1e-5):
-    """
-    Approximate the derivative of a function at a point using central difference.
-    :param fun: Function to differentiate, should take a single argument.
-    :param x: Point at which to approximate the derivative.
-    :param h: Step size for the approximation.
-    :return: Approximate derivative of `fun` at `x`.
-    """
-    return (fun(x + h) - fun(x - h)) / (2 * h)
-
-def approximate_second_derivative(fun, x, h=1e-5):
-    """
-    Approximate the second derivative of a function at a point using central difference.
-    :param fun: Function to differentiate, should take a single argument.
-    :param x: Point at which to approximate the derivative.
-    :param h: Step size for the approximation.
-    :return: Approximate derivative of `fun` at `x`.
-    """
-    return (fun(x + h) - 2 * fun(x) + fun(x - h)) / (h ** 2)
+import numdifftools as nd
+import numpy as np
 
 def optimize(x0, fun):
     """
     Perform Newton's method to find a local minimum of the function `fun`.
     :param x0: Initial guess for the minimum.
     :param fun: Function to minimize, should take a single argument.
-    :return: Approximate location of the minimum."""
+    :return: Approximate location of the minimum.
+    """
     max_iter = 1000
     x = x0
 
+    gradient = nd.Gradient(fun)
+    hessian = nd.Hessian(fun)
+
     for t in range(max_iter):
-        if (approximate_second_derivative(fun, x) == 0):
+        gradient_value = gradient(x)
+        hessian_value = hessian(x)
+
+        if (np.isclose(np.linalg.det(hessian_value), 0)):
             raise ValueError("Second derivative is zero, cannot proceed with optimization.")
 
-        x = x - approximate_derivative(fun, x) / approximate_second_derivative(fun, x)
-        if abs(approximate_derivative(fun, x)) < 1e-5:
-            return x
-        
+        x_next = x - np.linalg.solve(hessian_value, gradient_value)
+        if np.linalg.norm(x - x_next) < 1e-4:
+            return x_next
+        else:
+            x = x_next
+    
+    # if max_iter is reached without convergence
+    print("Warning: Maximum iterations reached without convergence.")
     return x
+
+optimize(2.95, np.cos)
