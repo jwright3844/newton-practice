@@ -3,10 +3,10 @@ import numpy as np
 
 def optimize(x0, fun):
     """
-    Perform Newton's method to find a local minimum of the function `fun`.
-    :param x0: Initial guess for the minimum.
-    :param fun: Function to minimize, should take a single argument.
-    :return: Approximate location of the minimum.
+    Perform Newton's method to find a critical point of the function `fun`.
+    :param x0: Initial guess for the critical point.
+    :param fun: Function to optimize, should take a single argument.
+    :return: Approximate location of the critical point.
     """
     max_iter = 1000
     x = x0
