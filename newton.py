@@ -1,6 +1,11 @@
 import numdifftools as nd
 import numpy as np
 
+
+# Hello, I have forked this code from John W. and now am practicing creating
+# my own branch to practice version control.
+
+
 def optimize(x0, fun):
     """
     Perform Newton's method to find a critical point of the function `fun`.
